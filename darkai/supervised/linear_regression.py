@@ -1,6 +1,5 @@
 import json
 
-
 class linear_regression:
 
     # the constructor accepts
@@ -12,8 +11,7 @@ class linear_regression:
         }
     
     def train(self, x, y, inplace=False):
-        backend = self.backend
-        x, y = backend.validate_array(x), backend.validate_array(y)
+        M = self.backend
         if x is None or y is None:
             raise ValueError("Invalid data types provided, expected " + str(backend.array_type))
         size_x, size_y = backend.len(x), backend.len(y)
@@ -26,12 +24,12 @@ class linear_regression:
         state = self.state
 
         sum_x, sum_y = backend.sum(x), backend.sum(y)
-        mean_x, mean_y = sum_x / float(size_x), sum_y / float(size_y)
-        
+        mean_x, mean_y = sum_x / size_x, sum_y / size_y
+
         # x1 = x - mean_x
-        x1 = backend.subtract(x, mean_x)
+        x1 = backend.subtract(x, mean_x, inplace)
         # y1 = y - mean_y
-        y1 = backend.subtract(y, mean_y)
+        y1 = backend.subtract(y, mean_y, inplace)
 
         # x2 = x1 ^ 2
         x2 = backend.square(x1, True)
@@ -40,12 +38,12 @@ class linear_regression:
         # z refers to x1 from now, since, we don't need x1 anymore
         z = backend.multiply(x1, y1, True, modify_right=True)
 
-        m = backend.sum(z) / float(backend.sum(x2))
+        m = backend.sum(z) / backend.sum(x2)
         c = mean_y - (m * mean_x)
 
         state["m"], state["c"] = m, c
         state["trainings"] += 1
-    
+
     def predict(self, x):
         state = self.state
         return state["m"] * x + state["c"]
