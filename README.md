@@ -1,5 +1,8 @@
 # DarkAI
 
+This is a work-in-progress library for Artificial Intelligence.
+It is merely an experiment. However, I will keep building on this library as and when I have free time.
+
 Example code -
 
 ```
